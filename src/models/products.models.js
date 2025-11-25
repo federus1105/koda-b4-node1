@@ -6,8 +6,35 @@ const products = [
     { id: 5, name: 'Smartwatch', price: 199.99}
 ];
 
-function getAllproducts(){
-    return products
+function getAllproducts(filters){
+    let filteredProducts = [...products];
+    // --- 1. SEARCH ---
+    if (filters.name) {
+        const searchLower = filters.name.toLowerCase();
+        filteredProducts = filteredProducts.filter(p => 
+            p.name.toLowerCase().includes(searchLower)
+        );
+    }
+
+    // --- 2. SORT ---
+    if (filters.sortBy) {
+          const field = filters.sortBy
+        
+        filteredProducts.sort((a, b) => {
+            if (a[field] < b[field]) return -1;
+            if (a[field] > b[field]) return 1;
+            return 0;
+        });
+    } else {
+        filteredProducts.sort((a, b) => {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        });
+        
+    }
+
+    return filteredProducts
 }
 
 function getProductById(id){
