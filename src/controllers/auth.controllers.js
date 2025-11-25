@@ -1,29 +1,58 @@
 const userModel = require('../models/auth.models');
 
-// --- RGGISTER ---
+/**
+ * Register user
+ * @typedef {object} Register
+ * @property {string} email.required - email
+ * @property {string} username.required - username
+ * @property {string} password.required - password
+ */
+
+/**
+ * POST /auth/register
+ * @summary Register
+ * @tags Auth
+ * @param {Register} request.body.required 
+ * @return {object} 200 - register response
+ * @return {object} 409 - Username already exists
+ */
 function Register(req, res) {  
-    const { username, password } = req.body;
-    const existingUser = userModel.findUser(username);
+    const { email, username, password } = req.body;
+    const existingUser = userModel.findUser(email);
     if (existingUser) {
         return res.status(409).json({
             success: false,
-            message: 'Username already exists' 
+            message: 'email already exists' 
         });
     }
 
-    let newUser = { username, password };
+    let newUser = { email, username, password };
     userModel.users.push(newUser);
     res.status(200).json({
         success: true,
         message: 'User registered successfully',
-        results: newUser 
+        results:  { email: newUser.email }
     });
- }
+ 
 
-//  --- LOGIN ---
+/**
+ * login user
+ * @typedef {object} Login
+ * @property {string} email.required - email
+ * @property {string} password.required - password
+ */}
+ 
+/**
+ * POST /auth/login
+ * @summary Login
+ * @tags Auth
+ * @param {Login} request.body.required 
+ * @return {object} 200 - register response
+ * @return {object} 409 - Username already exists
+ */
 function login(req, res) {
-    const { username, password } = req.body;
-    const user = userModel.findUser(username);
+    const { email, password } = req.body;
+    const user = userModel.findUser(email);
     if (!user || user.password !== password) {
         return res.status(401).json({ 
             success: false,
@@ -34,7 +63,7 @@ function login(req, res) {
     res.status(200).json({
          success: true,
          message: 'Login succesfully', 
-         results: user 
+         results:  { email: user.email }
         });
 }
 
