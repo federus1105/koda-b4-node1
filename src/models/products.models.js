@@ -58,5 +58,29 @@ function uploadProductImage(id, imagePath) {
     return false;
 }
 
+function addProduct(name, price) {
+    const newId = products.length ? products[products.length - 1].id + 1 : 1;
+    const newProduct = { id: newId, name, price, image: null };
+    products.push(newProduct);
+    return newProduct;
+}
 
-module.exports = { getAllproducts, products, getProductById, deleteproducbyId, uploadProductImage}
+function editProduct(id, updates) {
+    const product = getProductById(id);
+    if (!product) {
+        return false;
+    }
+
+    if (updates.name !== undefined) {
+        product.name = updates.name;
+    }
+
+    if (updates.price !== undefined) {
+        product.price = updates.price;
+    }
+
+    return true;
+}
+
+
+module.exports = { getAllproducts, products, getProductById, deleteproducbyId, uploadProductImage, addProduct, editProduct}
