@@ -1,9 +1,9 @@
 const products = [
-    { id: 1, name: 'Laptop', price: 999.99 },
-    { id: 2, name: 'Smartphone', price: 499.99 },
-    { id: 3, name: 'Tablet', price: 299.99 },
-    { id: 4, name: 'Headphones', price: 199.99},
-    { id: 5, name: 'Smartwatch', price: 199.99}
+    { id: 1, name: 'Laptop', price: 999.99, image: null },
+    { id: 2, name: 'Smartphone', price: 499.99, image: null },
+    { id: 3, name: 'Tablet', price: 299.99, image: null },
+    { id: 4, name: 'Headphones', price: 199.99, image: null},
+    { id: 5, name: 'Smartwatch', price: 199.99, image: null}
 ];
 
 function getAllproducts(filters){
@@ -49,4 +49,14 @@ function deleteproducbyId(id){
     }
 }
 
-module.exports = { getAllproducts, products, getProductById, deleteproducbyId}
+function uploadProductImage(id, imagePath) {
+    const product = getProductById(id); 
+    if (product) {
+        product.image = imagePath;
+        return true;
+    }
+    return false;
+}
+
+
+module.exports = { getAllproducts, products, getProductById, deleteproducbyId, uploadProductImage}
