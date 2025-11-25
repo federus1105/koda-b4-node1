@@ -1,9 +1,9 @@
 let users = [
-    { username: 'federus', password: 'password123'},
+    { email: 'federus@gmail.com', username: 'federus', password: 'password123'},
 ];
 
-function findUser(username) {
-    return users.find(user => user.username === username);
+function findUser(email) {
+    return users.find(user => user.email === email);
 }
 
 module.exports = {findUser, users};
