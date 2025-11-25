@@ -127,5 +127,65 @@ function uploadProductImage(req, res) {
     }
 }
 
+/**
+ * Create Product
+ * @typedef {object} CreateProduct
+ * @property {string} name.required - email
+ * @property {number} price.required - username
+ */
 
-module.exports = {getListProduct, getProductById, deleteproducbyId, uploadProductImage};
+/**
+ * POST /product
+ * @summary Add a new product
+ * @tags Products
+ * @param {CreateProduct} request.body.required
+ * @return {object} 201 - Product created successfully
+ * @return {object} 400 - Name and price are required
+ */
+function addProduct(req, res) {
+    const { name, price } = req.body;
+    if (!name || !price) {
+        return res.status(400).json({
+            success: false,
+            message: 'Name and price are required'
+        });
+    }
+    const newProduct = productModel.addProduct(name, price);
+    res.status(201).json({
+        success: true,
+        message: 'Product added successfully',
+        results: newProduct
+    });
+}
+
+/**
+ * PATCH /product/{id}
+ * @summary Update product (partial update)
+ * @tags Products
+ * @param {number} id.path.required - Product ID
+ * @param {CreateProduct} request.body - Fields to update (partial)
+ * @return {object} 200 - Product updated successfully
+ * @return {object} 404 - Product not found
+ */
+function editProduct(req, res) {
+    const productId = req.params.id;
+    const updates = req.body; 
+
+    const isUpdated = productModel.editProduct(productId, updates);
+
+    if (isUpdated) {
+        res.status(200).json({
+            success: true,
+            message: 'Product updated successfully',
+            results: { id: productId, ...updates },
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Product not found'
+        });
+    }
+}
+
+
+module.exports = {getListProduct, getProductById, deleteproducbyId, uploadProductImage, addProduct, editProduct};
