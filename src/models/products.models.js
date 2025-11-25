@@ -41,4 +41,12 @@ function getProductById(id){
     return products.find(product => product.id === parseInt(id));
 }
 
-module.exports = { getAllproducts, products, getProductById}
+function deleteproducbyId(id){
+    const index = products.findIndex(product => product.id === parseInt(id));
+    if (index !== -1) {
+        products.splice(index, 1);
+        return true;
+    }
+}
+
+module.exports = { getAllproducts, products, getProductById, deleteproducbyId}

@@ -70,4 +70,27 @@ function getProductById(req, res) {
     }
 }
 
-module.exports = {getListProduct, getProductById};
+/**
+ * DELETE /product/{id}
+ * @summary delete product by ID
+ * @tags Products
+ * @param {number} id.path - ID product
+ * @return {string} 200 - success response
+ */
+function deleteproducbyId(req, res) {
+    const productId = req.params.id;
+    const isDeleted = productModel.deleteproducbyId(productId); 
+    if (isDeleted) {
+        res.status(200).json({
+            success: true,
+            message: 'Product deleted successfully'
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Product not found'
+        });
+    }
+}
+
+module.exports = {getListProduct, getProductById, deleteproducbyId};
