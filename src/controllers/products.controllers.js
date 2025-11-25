@@ -93,4 +93,39 @@ function deleteproducbyId(req, res) {
     }
 }
 
-module.exports = {getListProduct, getProductById, deleteproducbyId};
+
+/**
+ * POST /product/{id}/upload
+ * @summary upload image product by ID
+ * @tags Products
+ * @param {number} id.path - ID product
+ * @param {file} image.formData - image file
+ * @return {string} 200 - success response
+ */
+function uploadProductImage(req, res) {
+    const productId = req.params.id;
+
+    if (!req.file) {
+        return res.status(400).json({
+            success: false,
+            message: 'No file uploaded'
+        });
+    }
+    const imagePath = req.file.path;
+    const isUpdated = productModel.uploadProductImage(productId, imagePath);
+    if (isUpdated) {
+        res.status(200).json({
+            success: true,
+            message: 'Product image uploaded successfully',
+            results: {image: req.file.filename}
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Product not found'
+        });
+    }
+}
+
+
+module.exports = {getListProduct, getProductById, deleteproducbyId, uploadProductImage};
