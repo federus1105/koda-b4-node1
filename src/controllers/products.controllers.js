@@ -1,14 +1,58 @@
 const productModel = require('../models/products.models');
 
+
+/**
+ * GET /product
+ * @summary Get list of products
+ * @tags Products
+ * @param {string} name.query - Filter name
+ * @param {string} sortBy.query - sorby field name and price
+ * @param {integer} page.query - page number
+ * @param {integer} limit.query - number of items per page
+ * @return {object} 200 - success response
+ * @return {object} 404 - Not found
+ */
 function getListProduct(req, res) {
-    const productsList = productModel.getAllproducts();
+    const { name, sortBy, page = 1, limit = 10 } = req.query;
+    const filters = { name, sortBy };
+    const allFilteredAndSortedProducts = productModel.getAllproducts(filters);
+
+    const pageInt = parseInt(page);
+    const limitInt = parseInt(limit);
+    const skipIndex = (pageInt - 1) * limitInt;
+    const paginatedProducts = allFilteredAndSortedProducts.slice(skipIndex, skipIndex + limitInt);
+    const totalProducts = allFilteredAndSortedProducts.length;
+
+    if (totalProducts === 0) {
+        return res.status(404).json({
+            success: false,
+            message: 'No products found',
+            currentPage: pageInt,
+            totalPages: 0,
+            totalProduct: 0,
+            data: []
+        });
+    }
+
     res.status(200).json({
         success: true,
         message: 'Products retrieved successfully',
-        results: productsList
+        currentPage: pageInt,
+        totalPages: Math.ceil(totalProducts / limitInt),
+        totalProduct: paginatedProducts.length,
+        data: paginatedProducts
     });
+
 }
 
+
+/**
+ * GET /product/{id}
+ * @summary Get product by ID
+ * @tags Products
+ * @param {number} id.path - ID product
+ * @return {string} 200 - success response
+ */
 function getProductById(req, res) {
     const productId = req.params.id;
     const product = productModel.getProductById(productId);
